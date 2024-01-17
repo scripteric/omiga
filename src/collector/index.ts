@@ -162,4 +162,10 @@ export class Collector {
 
     return feeRateStats!
   }
+
+  async getTransactionStatus(hash:string): Promise<CKBComponents.TransactionWithStatus> {
+    const ckb = new CKB(this.ckbNodeUrl)
+    const txStats = await ckb.rpc.getTransaction(hash)
+    return txStats
+  }
 }

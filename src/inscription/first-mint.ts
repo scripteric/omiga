@@ -26,7 +26,7 @@ export const buildFirstMintTx = async ({
   const isMainnet = address.startsWith('ckb')
   const txFee = feeRate ? calculateTransactionFee(feeRate) : FEE
   const lock = addressToScript(address)
-  const cells = await collector.getCells({ lock, capacityRange: ['0x0', '0x370447101'] })
+  const cells = await collector.getCells({ lock, capacityRange: ['0x34e62ce00', '0x5d21dba00'] })
   if (!cells || cells.length === 0) {
     throw new NoLiveCellException('The address has no specific cells')
   }

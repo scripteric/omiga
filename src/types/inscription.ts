@@ -46,6 +46,17 @@ export interface MintParams extends BaseParams {
   inscriptionInfoCellDep: CKBComponents.CellDep;
 }
 
+export interface ChainedMintParams extends BaseParams {
+  inscriptionId: Byte32;
+  mintLimit: bigint;
+  joyID?: JoyIDConfig;
+  index?: number;
+  count?: number;
+  cellDeps: CKBComponents.CellDep[]
+  chainedCount: number;
+  infoType: CKBComponents.Script;
+}
+
 export interface CloseParams extends BaseParams {
   inscriptionId: Byte32;
   joyID?: JoyIDConfig;

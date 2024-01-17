@@ -8,7 +8,7 @@ import {
 import { CapacityNotEnoughException, NoLiveCellException } from '../exceptions'
 import { Collector } from '../collector'
 
-const SingleCapacity = BigInt(145) * BigInt(10000_0000)
+const SingleCapacity = BigInt(200) * BigInt(10000_0000)
 
 export const buildSplitTx = async (collector: Collector, address: string, cellCount: number): Promise<CKBComponents.RawTransaction> => {
   const txFee = BigInt(80000)
@@ -18,7 +18,7 @@ export const buildSplitTx = async (collector: Collector, address: string, cellCo
     throw new NoLiveCellException('The address has no live cells')
   }
 
-  const needCapacity = MIN_CAPACITY + SingleCapacity * BigInt(cellCount)
+  const needCapacity = SingleCapacity * BigInt(cellCount)
 
   const { inputs, capacity: inputCapacity } = collector.collectInputs(cells, needCapacity, txFee)
 

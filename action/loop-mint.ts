@@ -1,6 +1,9 @@
 import { Collector } from "../src/collector";
-import { buildSelfMintTx } from "../src/inscription";
-import { AddressPrefix } from "@nervosnetwork/ckb-sdk-utils";
+import { buildChainedMintTx, buildSelfMintTx } from "../src/inscription";
+import {
+  AddressPrefix,
+  rawTransactionToHash,
+} from "@nervosnetwork/ckb-sdk-utils";
 import { blockchain } from "@ckb-lumos/base";
 import {
   CKB_INDEXER,
@@ -12,10 +15,14 @@ import {
   inscriptionInfoCellDep,
   initConfig,
   infoType,
+  ChainedCount,
 } from "./config";
 import { getInscriptionInfoTypeScript } from "../src/constants";
 import { append0x } from "../src/utils";
 import { InscriptionInfoException } from "../src/exceptions";
+
+const sleep = (delay: number) =>
+  new Promise((resolve) => setTimeout(resolve, delay));
 
 const mint = async (index?: number, count?: number) => {
   const address = collector
@@ -32,18 +39,6 @@ const mint = async (index?: number, count?: number) => {
 
   const feeRate = await collector.getFeeRate();
 
-  const rawTx: CKBComponents.RawTransaction = await buildSelfMintTx({
-    collector,
-    address,
-    inscriptionId,
-    mintLimit: BigInt(mintLimit) * BigInt(10 ** decimal),
-    feeRate: BigInt(feeRate.mean),
-    index,
-    count,
-    infoType,
-    inscriptionInfoCellDep,
-  });
-
   const secp256k1Dep: CKBComponents.CellDep = {
     outPoint: {
       txHash:
@@ -52,44 +47,79 @@ const mint = async (index?: number, count?: number) => {
     },
     depType: "depGroup",
   };
-  const witnessArgs = blockchain.WitnessArgs.unpack(
-    rawTx.witnesses[0]
-  ) as CKBComponents.WitnessArgs;
-  let unsignedTx: CKBComponents.RawTransactionToSign = {
-    ...rawTx,
-    cellDeps: [...rawTx.cellDeps, secp256k1Dep],
-    witnesses: [witnessArgs, ...rawTx.witnesses.slice(1)],
-  };
-  const signedTx = collector.getCkb().signTransaction(SECP256K1_PRIVATE_KEY)(
-    unsignedTx
-  );
 
-  let txHash = await collector
-    .getCkb()
-    .rpc.sendTransaction(signedTx, "passthrough");
-  console.info(
-    `Loop-Index-${index}: Inscription has been minted with tx hash ${txHash}`
-  );
+  const rawTxs: CKBComponents.RawTransaction[] = await buildChainedMintTx({
+    collector,
+    address,
+    inscriptionId,
+    mintLimit: BigInt(mintLimit) * BigInt(10 ** decimal),
+    feeRate: BigInt(feeRate.mean),
+    cellDeps: [secp256k1Dep, inscriptionInfoCellDep],
+    chainedCount: ChainedCount,
+    index,
+    count,
+    infoType,
+  });
+
+  let lastTxHash: string = "";
+  for (let i = 0; i < ChainedCount; i++) {
+    const rawHash = rawTransactionToHash(rawTxs[i]);
+    console.log("index:", i, "rawHash: ", rawHash);
+    const witnessArgs = blockchain.WitnessArgs.unpack(
+      rawTxs[i].witnesses[0]
+    ) as CKBComponents.WitnessArgs;
+    let unsignedTx: CKBComponents.RawTransactionToSign = {
+      ...rawTxs[i],
+      witnesses: [witnessArgs, ...rawTxs[i].witnesses.slice(1)],
+    };
+    const signedTx = collector.getCkb().signTransaction(SECP256K1_PRIVATE_KEY)(
+      unsignedTx
+    );
+
+    let txHash = await collector
+      .getCkb()
+      .rpc.sendTransaction(signedTx, "passthrough");
+    console.info(
+      `Loop-Index-${index}-${i}: Inscription has been minted with tx hash ${txHash}, ${rawHash}`
+    );
+
+    lastTxHash = txHash;
+  }
+
+  for (let i = 0; i < 20; i++) {
+    await sleep(5000);
+    let txStats = await collector.getTransactionStatus(lastTxHash);
+    if (txStats.txStatus.status == "committed") {
+      return;
+    }
+  }
 };
 
 const batch = async () => {
   let index = 0;
+  let futs: Promise<void>[] = [];
   for (index = 0; index < Count; index++) {
-    try {
-      await mint(index, Count);
-    } catch (error) {
-      continue;
-    }
+    futs.push(mint(index, Count));
+  }
+
+  for (index = 0; index < Count; index++) {
+    await futs[index];
   }
 };
 
 const run = async () => {
   await initConfig();
 
-  await batch();
-  setInterval(async () => {
-    await batch();
-  }, 100_000);
+  while (1) {
+    try {
+      await batch();
+    } catch (error) {
+      console.log(error)
+      await sleep(200000);
+      continue;
+    }
+    await sleep(5000);
+  }
 };
 
 run();
