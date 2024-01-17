@@ -16,6 +16,7 @@ import {
   initConfig,
   infoType,
   ChainedCount,
+  feeRate
 } from "./config";
 import { getInscriptionInfoTypeScript } from "../src/constants";
 import { append0x } from "../src/utils";
@@ -25,6 +26,7 @@ const sleep = (delay: number) =>
   new Promise((resolve) => setTimeout(resolve, delay));
 
 const mint = async (index?: number, count?: number) => {
+  try {
   const address = collector
     .getCkb()
     .utils.privateKeyToAddress(SECP256K1_PRIVATE_KEY, {
@@ -36,9 +38,8 @@ const mint = async (index?: number, count?: number) => {
 
   const mintLimit = 10;
   const decimal = 8;
-
-  const feeRate = await collector.getFeeRate();
-
+  // 使用动态gasfee
+  // const feeRate = await collector.getFeeRate();
   const secp256k1Dep: CKBComponents.CellDep = {
     outPoint: {
       txHash:
@@ -53,7 +54,7 @@ const mint = async (index?: number, count?: number) => {
     address,
     inscriptionId,
     mintLimit: BigInt(mintLimit) * BigInt(10 ** decimal),
-    feeRate: BigInt(feeRate.mean),
+    feeRate: BigInt(feeRate),
     cellDeps: [secp256k1Dep, inscriptionInfoCellDep],
     chainedCount: ChainedCount,
     index,
@@ -92,6 +93,12 @@ const mint = async (index?: number, count?: number) => {
     if (txStats.txStatus.status == "committed") {
       return;
     }
+  }
+  } catch (error) {
+    // 捕获并记录异常
+    await sleep(5000);
+    console.log(error);
+    // 可以选择继续处理或者返回一个标志来表示出现了异常
   }
 };
 
