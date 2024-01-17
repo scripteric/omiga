@@ -189,9 +189,4 @@ export class Collector {
     return txStats;
   }
 
-  async getTransactionStatus(hash:string): Promise<CKBComponents.TransactionWithStatus> {
-    const ckb = new CKB(this.ckbNodeUrl)
-    const txStats = await ckb.rpc.getTransaction(hash)
-    return txStats
-  }
 }

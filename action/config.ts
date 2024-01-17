@@ -3,8 +3,7 @@ import { getInscriptionInfoTypeScript } from "../src/constants";
 import { InscriptionInfoException } from "../src/exceptions";
 import { append0x } from "../src/utils";
 
-export const SECP256K1_PRIVATE_KEY =
-  "";
+export const SECP256K1_PRIVATE_KEY = "";
 // Split a specified number of cells for minting later
 export const Count = 2;
 export const ChainedCount = 16;
