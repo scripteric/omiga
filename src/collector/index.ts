@@ -155,4 +155,11 @@ export class Collector {
     const { cell } = await ckb.rpc.getLiveCell(outPoint, true)
     return cell
   }
+
+  async getFeeRate(): Promise<CKBComponents.FeeRateStats> {
+    const ckb = new CKB(this.ckbNodeUrl)
+    const feeRateStats = await ckb.rpc.getFeeRateStats()
+
+    return feeRateStats!
+  }
 }
