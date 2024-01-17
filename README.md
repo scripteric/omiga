@@ -25,11 +25,16 @@ npx ts-node action/transfer-ckb.ts
 
 ### 使用说明
 1. 修改 `action/config.ts` 文件，设置自己的信息
+
 2. 执行 `action/split.ts` 文件，分割 `Count` 个空单元格
+
 3. 执行 `action/first-mint.ts` 文件，创建一个 Inscription xudt 单元格
+
 4. 执行 `action/loop-mint.ts` 文件，循环创建 Inscription xudt 单元格
+
 5. 执行 `action/transfer.ts` 文件，转移所有 Inscription 和 ckb，推荐直接转到joyid里面，方便操作
-6. 执行 `action/transfer-ckb.ts` 文件，转移所有 ckb，注意，如果ckb全部转移走，Inscription可能会丢失，建议一起转移到joyid
+
+6. 执行 `action/transfer-ckb.ts` 文件，转移所有ckb，注意，如果ckb全部转移走，Inscription可能会因为ckb不够手续费而无法转移，建议一起转移到joyid
 
 初次运行先修改配置文件，然后依次执行步骤2、3即可，步骤4会循环执行
 

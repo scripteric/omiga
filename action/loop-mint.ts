@@ -16,10 +16,7 @@ import {
   initConfig,
   infoType,
   ChainedCount,
-<<<<<<< HEAD
   feeRate
-=======
->>>>>>> daf8a35 (add transfer)
 } from "./config";
 import { getInscriptionInfoTypeScript } from "../src/constants";
 import { append0x } from "../src/utils";
@@ -30,88 +27,79 @@ const sleep = (delay: number) =>
 
 const mint = async (index?: number, count?: number) => {
   try {
-  const address = collector
-    .getCkb()
-    .utils.privateKeyToAddress(SECP256K1_PRIVATE_KEY, {
-      prefix: AddressPrefix.Mainnet,
-    });
-  console.log("address: ", address);
-
-  // the inscriptionId come from inscription deploy transaction
-
-  const mintLimit = 10;
-  const decimal = 8;
-<<<<<<< HEAD
-  // 使用动态gasfee
-  // const feeRate = await collector.getFeeRate();
-=======
-
-  const feeRate = await collector.getFeeRate();
-
->>>>>>> daf8a35 (add transfer)
-  const secp256k1Dep: CKBComponents.CellDep = {
-    outPoint: {
-      txHash:
-        "0x71a7ba8fc96349fea0ed3a5c47992e3b4084b031a42264a018e0072e8172e46c",
-      index: "0x0",
-    },
-    depType: "depGroup",
-  };
-
-  const rawTxs: CKBComponents.RawTransaction[] = await buildChainedMintTx({
-    collector,
-    address,
-    inscriptionId,
-    mintLimit: BigInt(mintLimit) * BigInt(10 ** decimal),
-    feeRate: BigInt(feeRate),
-    cellDeps: [secp256k1Dep, inscriptionInfoCellDep],
-    chainedCount: ChainedCount,
-    index,
-    count,
-    infoType,
-  });
-
-  let lastTxHash: string = "";
-  for (let i = 0; i < ChainedCount; i++) {
-    const rawHash = rawTransactionToHash(rawTxs[i]);
-    console.log("index:", i, "rawHash: ", rawHash);
-    const witnessArgs = blockchain.WitnessArgs.unpack(
-      rawTxs[i].witnesses[0]
-    ) as CKBComponents.WitnessArgs;
-    let unsignedTx: CKBComponents.RawTransactionToSign = {
-      ...rawTxs[i],
-      witnesses: [witnessArgs, ...rawTxs[i].witnesses.slice(1)],
-    };
-    const signedTx = collector.getCkb().signTransaction(SECP256K1_PRIVATE_KEY)(
-      unsignedTx
-    );
-
-    let txHash = await collector
+    const address = collector
       .getCkb()
-      .rpc.sendTransaction(signedTx, "passthrough");
-    console.info(
-      `Loop-Index-${index}-${i}: Inscription has been minted with tx hash ${txHash}, ${rawHash}`
-    );
+      .utils.privateKeyToAddress(SECP256K1_PRIVATE_KEY, {
+        prefix: AddressPrefix.Mainnet,
+      });
+    console.log("address: ", address);
 
-    lastTxHash = txHash;
-  }
+    // the inscriptionId come from inscription deploy transaction
 
-  for (let i = 0; i < 20; i++) {
-    await sleep(5000);
-    let txStats = await collector.getTransactionStatus(lastTxHash);
-    if (txStats.txStatus.status == "committed") {
-      return;
+    const mintLimit = 10;
+    const decimal = 8;
+    // 使用动态gasfee
+    // const feeRate = await collector.getFeeRate();
+    const secp256k1Dep: CKBComponents.CellDep = {
+      outPoint: {
+        txHash:
+          "0x71a7ba8fc96349fea0ed3a5c47992e3b4084b031a42264a018e0072e8172e46c",
+        index: "0x0",
+      },
+      depType: "depGroup",
+    };
+
+    const rawTxs: CKBComponents.RawTransaction[] = await buildChainedMintTx({
+      collector,
+      address,
+      inscriptionId,
+      mintLimit: BigInt(mintLimit) * BigInt(10 ** decimal),
+      feeRate: BigInt(feeRate),
+      cellDeps: [secp256k1Dep, inscriptionInfoCellDep],
+      chainedCount: ChainedCount,
+      index,
+      count,
+      infoType,
+    });
+
+    let lastTxHash: string = "";
+    for (let i = 0; i < ChainedCount; i++) {
+      const rawHash = rawTransactionToHash(rawTxs[i]);
+      console.log("index:", i, "rawHash: ", rawHash);
+      const witnessArgs = blockchain.WitnessArgs.unpack(
+        rawTxs[i].witnesses[0]
+      ) as CKBComponents.WitnessArgs;
+      let unsignedTx: CKBComponents.RawTransactionToSign = {
+        ...rawTxs[i],
+        witnesses: [witnessArgs, ...rawTxs[i].witnesses.slice(1)],
+      };
+      const signedTx = collector.getCkb().signTransaction(SECP256K1_PRIVATE_KEY)(
+        unsignedTx
+      );
+
+      let txHash = await collector
+        .getCkb()
+        .rpc.sendTransaction(signedTx, "passthrough");
+      console.info(
+        `Loop-Index-${index}-${i}: Inscription has been minted with tx hash ${txHash}, ${rawHash}`
+      );
+
+      lastTxHash = txHash;
     }
-  }
-<<<<<<< HEAD
+
+    for (let i = 0; i < 20; i++) {
+      await sleep(5000);
+      let txStats = await collector.getTransactionStatus(lastTxHash);
+      if (txStats.txStatus.status == "committed") {
+        return;
+      }
+    }
   } catch (error) {
     // 捕获并记录异常
     await sleep(5000);
     console.log(error);
     // 可以选择继续处理或者返回一个标志来表示出现了异常
   }
-=======
->>>>>>> daf8a35 (add transfer)
 };
 
 const batch = async () => {
