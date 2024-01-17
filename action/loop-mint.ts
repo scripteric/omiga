@@ -60,7 +60,7 @@ const run = async () => {
   await batch()
   setInterval(async () => {
     await batch()
-  }, 100_000)
+  }, 180_000)
 }
 
 run()

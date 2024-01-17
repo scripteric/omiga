@@ -8,6 +8,8 @@
 ### CMD
 
 ```
+npm install
+
 npx ts-node action/split.ts
 
 npx ts-node action/first-mint.ts
