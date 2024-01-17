@@ -16,7 +16,10 @@ import {
   initConfig,
   infoType,
   ChainedCount,
+<<<<<<< HEAD
   feeRate
+=======
+>>>>>>> daf8a35 (add transfer)
 } from "./config";
 import { getInscriptionInfoTypeScript } from "../src/constants";
 import { append0x } from "../src/utils";
@@ -38,8 +41,14 @@ const mint = async (index?: number, count?: number) => {
 
   const mintLimit = 10;
   const decimal = 8;
+<<<<<<< HEAD
   // 使用动态gasfee
   // const feeRate = await collector.getFeeRate();
+=======
+
+  const feeRate = await collector.getFeeRate();
+
+>>>>>>> daf8a35 (add transfer)
   const secp256k1Dep: CKBComponents.CellDep = {
     outPoint: {
       txHash:
@@ -94,12 +103,15 @@ const mint = async (index?: number, count?: number) => {
       return;
     }
   }
+<<<<<<< HEAD
   } catch (error) {
     // 捕获并记录异常
     await sleep(5000);
     console.log(error);
     // 可以选择继续处理或者返回一个标志来表示出现了异常
   }
+=======
+>>>>>>> daf8a35 (add transfer)
 };
 
 const batch = async () => {
