@@ -40,9 +40,9 @@ const mint = async (index?: number, count?: number) => {
     const decimal = 8;
     // 使用动态gasfee
     const feeRate = await collector.getFeeRate();
-
-    if(feeRate.median > `0x${BigInt(MaxFeeRate).toString(16)}`){
-      await sleep(100000)
+    let feeRateLimit = feeRate.median;
+    if(feeRateLimit > `0x${BigInt(MaxFeeRate).toString(16)}`){
+      feeRateLimit = `0x${BigInt(MaxFeeRate).toString(16)}`;
     }
     const secp256k1Dep: CKBComponents.CellDep = {
       outPoint: {
@@ -58,7 +58,7 @@ const mint = async (index?: number, count?: number) => {
       address,
       inscriptionId,
       mintLimit: BigInt(mintLimit) * BigInt(10 ** decimal),
-      feeRate: BigInt(feeRate.median),
+      feeRate: BigInt(feeRateLimit),
       cellDeps: [secp256k1Dep, inscriptionInfoCellDep],
       chainedCount: ChainedCount,
       index,
