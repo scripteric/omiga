@@ -7,6 +7,7 @@ import {
   CKB_NODE,
   SECP256K1_PRIVATE_KEY,
   TO_ADDRESS,
+  MaxFeeRate
 } from "./config";
 
 const transfer = async () => {
@@ -38,7 +39,11 @@ const transfer = async () => {
     },
     depType: "depGroup",
   };
-
+  const feeRate = await collector.getFeeRate();
+  let feeRateLimit = feeRate.median;
+  if(feeRateLimit > `0x${BigInt(MaxFeeRate).toString(16)}`){
+    feeRateLimit = `0x${BigInt(MaxFeeRate).toString(16)}`;
+  }
   const rawTx: CKBComponents.RawTransaction = await buildTransferTx({
     collector,
     address,
@@ -46,6 +51,7 @@ const transfer = async () => {
     cellDeps: [secp256k1Dep],
     toAddress: TO_ADDRESS,
     cellCount: 1000,
+    feeRate: BigInt(feeRateLimit)
   });
 
   const witnessArgs = blockchain.WitnessArgs.unpack(
