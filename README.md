@@ -23,6 +23,30 @@ npx ts-node action/transfer-ckb.ts
 
 ```
 
+### Configuration File Explanation
+
+- `SECP256K1_PRIVATE_KEY` is the private key. Do not disclose it. You can export it directly from Little Fox. Remember to prefix it with '0x.'
+
+- `Count` represents the number of split cells, which can be increased to enhance parallel execution speed.
+
+- `ChainedCount` indicates the number of times cells are executed in a chained manner. Setting it too high may result in errors; the default value is recommended.
+
+- `CKB_NODE` is the CKB mainnet node address.
+
+- `CKB_INDEXER` is the CKB mainnet indexer node address.
+
+- `MaxFeeRate` is the maximum acceptable gas fee.
+
+- `TO_ADDRESS` is the receiving address for 'transfer' and 'transfer-ckb.' It is strongly recommended to use joyid, as it currently has good support for Omiga.
+
+- When executing `split.ts` with `Single`, it denotes the CKB quantity for a single cell. Continuous execution consumes CKB, and after depletion, it won't be executable. Adjust it accordingly.
+
+### Note:
+1. Do not disclose your private key. Preferably, operate with new addresses for enhanced security.
+
+For running your node, you can directly download Neuron and select the full node mode. Adjust the configuration accordingly.
+
+
 ### 使用说明
 1. 修改 `action/config.ts` 文件，设置自己的信息
 
