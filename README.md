@@ -57,7 +57,7 @@ TO_ADDRESS 为transfer和transfer-ckb的接收地址，强烈推荐joyid，因�
 1. 请勿泄露私钥，尽量使用新地址操作，安全第一
 
 
-### 自己运行节点可以直接下载[Neuron](https://github.com/nervosnetwork/neuron/releases/tag/v0.112.0)，可以选择轻节点模式，同步速度更快。配置改为
+### 自己运行节点可以直接下载[Neuron](https://github.com/nervosnetwork/neuron/releases/tag/v0.112.0)，需要选择全节点模式。配置改为
 ```
 export const CKB_NODE = "http://127.0.0.1:8114/rpc";
 export const CKB_INDEXER = "http://127.0.0.1:8114";
