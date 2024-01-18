@@ -22,9 +22,9 @@ const mint = async (index?: number) => {
   const mintLimit = 10;
   const decimal = 8;
   const feeRate = await collector.getFeeRate();
-  let feeRateLimit = feeRate.median;
-  if(feeRateLimit > `0x${BigInt(MaxFeeRate).toString(16)}`){
-    feeRateLimit = `0x${BigInt(MaxFeeRate).toString(16)}`;
+  let feeRateLimit = parseInt(feeRate.median);
+  if(feeRateLimit > MaxFeeRate){
+    feeRateLimit = MaxFeeRate;
   }
   const rawTx: CKBComponents.RawTransaction = await buildFirstMintTx({
     collector,
