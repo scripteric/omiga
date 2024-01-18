@@ -45,7 +45,7 @@ const mint = async (index?: number, count?: number) => {
       feeRateLimit = MaxFeeRate;
     }
     const secp256k1Dep: CKBComponents.CellDep = {
-      outPoint: {
+      outPoint: { 
         txHash:
           "0x71a7ba8fc96349fea0ed3a5c47992e3b4084b031a42264a018e0072e8172e46c",
         index: "0x0",
@@ -92,7 +92,7 @@ const mint = async (index?: number, count?: number) => {
     }
 
     for (let i = 0; i < 20; i++) {
-      await sleep(5000);
+      await sleep(50000);
       let txStats = await collector.getTransactionStatus(lastTxHash);
       if (txStats.txStatus.status == "committed") {
         return;

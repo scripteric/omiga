@@ -44,6 +44,7 @@ export interface MintParams extends BaseParams {
   count?: number;
   infoType: CKBComponents.Script;
   inscriptionInfoCellDep: CKBComponents.CellDep;
+  single: number
 }
 
 export interface ChainedMintParams extends BaseParams {
