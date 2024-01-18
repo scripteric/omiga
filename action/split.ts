@@ -2,7 +2,7 @@ import { Collector } from '../src/collector'
 import {  buildSplitTx } from '../src/inscription'
 import { AddressPrefix } from '@nervosnetwork/ckb-sdk-utils'
 import { blockchain } from '@ckb-lumos/base'
-import { CKB_INDEXER, CKB_NODE, SECP256K1_PRIVATE_KEY, Count, Single } from './config'
+import { CKB_INDEXER, CKB_NODE, SECP256K1_PRIVATE_KEY, Count, Single, MaxFeeRate } from './config'
 
 const split = async (cellCount: number) => {
   const collector = new Collector({
@@ -14,7 +14,13 @@ const split = async (cellCount: number) => {
 
   const SingleCapacity = BigInt(Single) * BigInt(10000_0000)
 
-  const rawTx = await buildSplitTx(collector, address, cellCount, SingleCapacity)
+  const feeRate = await collector.getFeeRate();
+  let feeRateLimit = parseInt(feeRate.median);
+  if(feeRateLimit > MaxFeeRate){
+    feeRateLimit = MaxFeeRate;
+  }
+
+  const rawTx = await buildSplitTx(collector, address, cellCount, SingleCapacity, feeRateLimit)
 
   const secp256k1Dep: CKBComponents.CellDep = {
     outPoint: {
