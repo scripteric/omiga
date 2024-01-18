@@ -16,7 +16,7 @@ import {
   initConfig,
   infoType,
   ChainedCount,
-  feeRate
+  MaxFeeRate
 } from "./config";
 import { getInscriptionInfoTypeScript } from "../src/constants";
 import { append0x } from "../src/utils";
@@ -39,7 +39,11 @@ const mint = async (index?: number, count?: number) => {
     const mintLimit = 10;
     const decimal = 8;
     // 使用动态gasfee
-    // const feeRate = await collector.getFeeRate();
+    const feeRate = await collector.getFeeRate();
+
+    if(feeRate.median > `0x${BigInt(MaxFeeRate).toString(16)}`){
+      await sleep(100000)
+    }
     const secp256k1Dep: CKBComponents.CellDep = {
       outPoint: {
         txHash:
@@ -54,7 +58,7 @@ const mint = async (index?: number, count?: number) => {
       address,
       inscriptionId,
       mintLimit: BigInt(mintLimit) * BigInt(10 ** decimal),
-      feeRate: BigInt(feeRate),
+      feeRate: BigInt(feeRate.median),
       cellDeps: [secp256k1Dep, inscriptionInfoCellDep],
       chainedCount: ChainedCount,
       index,
@@ -125,7 +129,7 @@ const run = async () => {
       await sleep(200000);
       continue;
     }
-    await sleep(5000);
+    await sleep(10000);
   }
 };
 

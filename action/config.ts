@@ -9,7 +9,7 @@ export const Count = 2;
 export const ChainedCount = 16;
 export const CKB_NODE = "https://mainnet.ckb.dev/rpc";
 export const CKB_INDEXER = "https://mainnet.ckb.dev";
-export const feeRate = "1000";
+export const MaxFeeRate = 30000;
 export const TO_ADDRESS = ""
 
 export let inscriptionInfoCellDep: CKBComponents.CellDep;

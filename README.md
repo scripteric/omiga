@@ -41,17 +41,24 @@ npx ts-node action/transfer-ckb.ts
 ### 配置文件说明
 SECP256K1_PRIVATE_KEY 为私钥，请勿泄露，可以直接从小狐狸导出，记得最前面加上 '0x'
 
-Count 为分割的单元格数量，可以增大并行执行的速度
+Count 为分割的Cell数量，可以增大并行执行的速度
 
-ChainedCount一个单元格链式执行的次数，太大可能会报错，默认即可
+ChainedCount一个Cell链式执行的次数，太大可能会报错，默认即可
 
 CKB_NODE 为 CKB 主网节点地址
 
 CKB_INDEXER 为 CKB 主网索引节点地址
 
-feeRate 一般默认即可
+MaxFeeRate 最大接受的gas fee
 
 TO_ADDRESS 为transfer和transfer-ckb的接收地址，强烈推荐joyid，因为joyid目前对Omiga的支持度比较高
 
 ### 注意事项
 1. 请勿泄露私钥，尽量使用新地址操作，安全第一
+
+
+### 自己运行节点可以直接下载[Neuron](https://github.com/nervosnetwork/neuron/releases/tag/v0.112.0)，配置改为
+```
+export const CKB_NODE = "http://127.0.0.1:8114/rpc";
+export const CKB_INDEXER = "http://127.0.0.1:8114";
+```
