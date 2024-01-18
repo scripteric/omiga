@@ -11,6 +11,7 @@ export const CKB_NODE = "https://mainnet.ckb.dev/rpc";
 export const CKB_INDEXER = "https://mainnet.ckb.dev";
 export const MaxFeeRate = 30000;
 export const TO_ADDRESS = ""
+export const Single= 200
 
 export let inscriptionInfoCellDep: CKBComponents.CellDep;
 export const inscriptionId =
