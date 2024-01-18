@@ -4,14 +4,18 @@ import {
 } from '@nervosnetwork/ckb-sdk-utils'
 import {
   MIN_CAPACITY,
+  FEE
 } from '../constants'
 import { CapacityNotEnoughException, NoLiveCellException } from '../exceptions'
 import { Collector } from '../collector'
+import {
+  calculateTransactionFee,
+} from "./helper";
 
 
-
-export const buildSplitTx = async (collector: Collector, address: string, cellCount: number, SingleCapacity: bigint, feeRateLimit: number): Promise<CKBComponents.RawTransaction> => {
-  const txFee = BigInt(feeRateLimit)
+export const buildSplitTx = async (collector: Collector, address: string, cellCount: number, SingleCapacity: bigint, feeRate: bigint): Promise<CKBComponents.RawTransaction> => {
+  const txFee = feeRate ? calculateTransactionFee(feeRate) : FEE;
+  // const txFee = BigInt(feeRateLimit)
   const lock = addressToScript(address)
   const cells = await collector.getCells({ lock })
   if (!cells || cells.length === 0) {

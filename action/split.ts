@@ -20,7 +20,7 @@ const split = async (cellCount: number) => {
     feeRateLimit = MaxFeeRate;
   }
 
-  const rawTx = await buildSplitTx(collector, address, cellCount, SingleCapacity, feeRateLimit)
+  const rawTx = await buildSplitTx(collector, address, cellCount, SingleCapacity, BigInt(feeRateLimit))
 
   const secp256k1Dep: CKBComponents.CellDep = {
     outPoint: {
