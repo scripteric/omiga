@@ -53,6 +53,8 @@ MaxFeeRate 最大接受的gas fee
 
 TO_ADDRESS 为transfer和transfer-ckb的接收地址，强烈推荐joyid，因为joyid目前对Omiga的支持度比较高
 
+Single 执行split.ts时单个Cell的CKB数量，循环执行会消耗CKB，CKB消耗完之后会无法执行，可适当设置大一些
+
 ### 注意事项
 1. 请勿泄露私钥，尽量使用新地址操作，安全第一
 
