@@ -2,7 +2,17 @@ import { Collector } from "../src/collector";
 import { buildFirstMintTx } from "../src/inscription";
 import { AddressPrefix } from "@nervosnetwork/ckb-sdk-utils";
 import { blockchain } from "@ckb-lumos/base";
-import { CKB_INDEXER, CKB_NODE, SECP256K1_PRIVATE_KEY, Count, inscriptionInfoCellDep, infoType, initConfig,MaxFeeRate } from "./config";
+import {
+  CKB_INDEXER,
+  CKB_NODE,
+  SECP256K1_PRIVATE_KEY,
+  Count,
+  inscriptionInfoCellDep,
+  infoType,
+  initConfig,
+  MaxFeeRate,
+  Single,
+} from "./config";
 
 const mint = async (index?: number) => {
   const collector = new Collector({
@@ -23,7 +33,7 @@ const mint = async (index?: number) => {
   const decimal = 8;
   const feeRate = await collector.getFeeRate();
   let feeRateLimit = parseInt(feeRate.median);
-  if(feeRateLimit > MaxFeeRate){
+  if (feeRateLimit > MaxFeeRate) {
     feeRateLimit = MaxFeeRate;
   }
   const rawTx: CKBComponents.RawTransaction = await buildFirstMintTx({
@@ -35,6 +45,7 @@ const mint = async (index?: number) => {
     index,
     infoType,
     inscriptionInfoCellDep,
+    single: Single,
   });
 
   const secp256k1Dep: CKBComponents.CellDep = {
